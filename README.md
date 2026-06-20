@@ -4,18 +4,18 @@ WeatherGuard Admin is a small invitation-based weather alert system built with a
 
 ## Tech Stack
 
-- Backend: NestJS, Prisma, SQLite, JWT, Passport, `@nestjs/schedule`
+- Backend: NestJS, Prisma, PostgreSQL, JWT, Passport, `@nestjs/schedule`
 - Frontend: React, TypeScript, Vite, Tailwind CSS, TanStack Query
-- Local database: SQLite through Prisma
+- Database: PostgreSQL through Prisma
 
 ## Project Structure
 
 ```text
 weatherguard-admin/
-├─ backend/     # NestJS API
-├─ frontend/    # React admin panel
-├─ project.md   # Original assignment brief
-└─ README.md
+|-- backend/     # NestJS API
+|-- frontend/    # React admin panel
+|-- project.md   # Original assignment brief
+`-- README.md
 ```
 
 I kept the backend and frontend in separate folders because they have different runtime concerns and can be deployed independently. They still live in one repository so the review flow is straightforward.
@@ -104,10 +104,39 @@ I chose simulation instead of a third-party weather API because the assignment a
 
 ## Deployment Notes
 
-For a live demo, the frontend can be deployed to Vercel or Netlify. The backend can be deployed to Render or Railway. For production deployment, switch Prisma from SQLite to PostgreSQL and set `DATABASE_URL`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `FRONTEND_URL` in the hosting provider.
+The project is configured for Render with PostgreSQL.
+
+Backend Render Web Service:
+
+- Root Directory: `backend`
+- Build Command: `npm install && npm run render:build`
+- Start Command: `npm run start:prod`
+
+Backend environment variables:
+
+```text
+DATABASE_URL=<Render Postgres internal database URL>
+JWT_SECRET=<long random secret>
+ADMIN_EMAIL=admin@weatherguard.local
+ADMIN_PASSWORD=Admin@123
+FRONTEND_URL=<Render frontend URL>
+PORT=3000
+```
+
+Frontend Render Static Site:
+
+- Root Directory: `frontend`
+- Build Command: `npm install && npm run build`
+- Publish Directory: `dist`
+
+Frontend environment variable:
+
+```text
+VITE_API_URL=<Render backend URL>
+```
 
 ## Tradeoffs
 
-- SQLite keeps local setup fast for the assignment; PostgreSQL would be better for a hosted production version.
+- PostgreSQL is used so the deployed app keeps data across restarts and redeploys.
 - Invite approval does not create user passwords because the requested scope is admin approval and alert eligibility. A lightweight email lookup page is included so the user-side alert delivery can be demonstrated without adding a full user auth system.
 - Weather alerts are simulated for reliability during review and recording.
